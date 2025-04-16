@@ -2,7 +2,7 @@
 <body>
 
 <h1>CGPA Calculator</h1>
-<h3>Past Semesters</h3>
+<h3>CGPA</h3>
 
 <h3>Current Semester</h3>
 
@@ -11,6 +11,7 @@
     <th>Course</th>
     <th>GPA</th> 
     <th>Course Credit</th>
+    <th>Previous Grade</th>
   </tr>
   <tr>
     <td>
@@ -22,6 +23,7 @@
     <td>
       <input type="number" value="3">
     </td>
+
   </tr>
 </table>
 
