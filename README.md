@@ -135,7 +135,7 @@
   }
 
   let semesterCount = 1;
-  const MAX_SEMESTERS = 19;
+  const MAX_SEMESTERS = 20;
 
   // Enforce max and min in real time
   function enforceValueLimits() {
