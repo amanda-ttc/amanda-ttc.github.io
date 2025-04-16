@@ -176,50 +176,52 @@
 
   enforceValueLimits();
 
-  function newSemester() {
-    if (semesterCount >= MAX_SEMESTERS) {
-      alert("Maximum of 19 semesters reached.");
-      return;
-    }
-
-    const originalSection = document.querySelector(".clone-this");
-    const clonedSection = originalSection.cloneNode(true);
-    clonedSection.setAttribute("data-removable", "true");
-
-    const heading = clonedSection.querySelector("h3");
-    heading.innerText = "Future Semester";
-    heading.contentEditable = true;
-
-    const inputs = clonedSection.querySelectorAll("input");
-    inputs.forEach(input => {
-      if (input.type === "text") input.value = "";
-      if (input.type === "number") {
-        input.value = (input.max === "9") ? "3" : "0";
-        input.setAttribute("max", input.max);
-        input.setAttribute("min", input.min || "0");
-      }
-    });
-
-    // Add remove button
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove Semester";
-    removeBtn.className = "remove-btn";
-    removeBtn.onclick = () => {
-      if (clonedSection.getAttribute("data-removable") === "true") {
-        clonedSection.remove();
-        semesterCount--;
-      }
-    };
-    clonedSection.appendChild(removeBtn);
-
-    const wrapper = document.getElementById("semester-wrapper");
-    wrapper.appendChild(clonedSection);
-    semesterCount++;
-
-    enforceValueLimits();
-
-    clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
+ function newSemester() {
+  if (semesterCount >= MAX_SEMESTERS) {
+    alert("Maximum of 19 semesters reached.");
+    return;
   }
+
+  const originalSection = document.querySelector(".clone-this");
+  const clonedSection = originalSection.cloneNode(true);
+  clonedSection.setAttribute("data-removable", "true");
+
+  const heading = clonedSection.querySelector("h3");
+  heading.innerText = "Future Semester";
+  heading.contentEditable = true;
+
+  const inputs = clonedSection.querySelectorAll("input");
+  inputs.forEach(input => {
+    if (input.type === "text") input.value = "";
+    if (input.type === "number") {
+      input.value = (input.max === "9") ? "3" : "0";
+      input.setAttribute("max", input.max);
+      input.setAttribute("min", input.min || "0");
+    }
+  });
+
+  // Clear error messages so they don’t transfer from the original
+  clonedSection.querySelectorAll(".error-message").forEach(msg => msg.textContent = "");
+
+  // Add remove button
+  const removeBtn = document.createElement("button");
+  removeBtn.textContent = "Remove Semester";
+  removeBtn.className = "remove-btn";
+  removeBtn.onclick = () => {
+    if (clonedSection.getAttribute("data-removable") === "true") {
+      clonedSection.remove();
+      semesterCount--;
+    }
+  };
+  clonedSection.appendChild(removeBtn);
+
+  const wrapper = document.getElementById("semester-wrapper");
+  wrapper.appendChild(clonedSection);
+  semesterCount++;
+
+  enforceValueLimits();
+  clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 </script>
 
 </body>
