@@ -38,7 +38,7 @@
 </table>
 <br>
 
-<button type="button" onclick="myFunction()">Add Row</button>
+<button type="button" onclick="myFunction()">Add Semester</button>
 
 <script>
 function myFunction() {
