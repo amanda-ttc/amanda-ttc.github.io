@@ -24,6 +24,7 @@
       padding: 20px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       border-radius: 8px;
+      position: relative;
     }
 
     table.semester-table {
@@ -64,6 +65,28 @@
     button:hover {
       background-color: #f7e6ee;
     }
+
+    .remove-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: #ffdddd;
+      color: #900;
+      border: 1px solid #c00;
+      border-radius: 5px;
+      font-size: 12px;
+      padding: 5px 10px;
+    }
+
+    .remove-btn:hover {
+      background-color: #ffcfcf;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -76,7 +99,8 @@
     <tr>
       <th>Current CGPA</th>
       <td>
-        <input type="number" placeholder="0" max="10">
+        <input type="number" placeholder="0" max="10" min="0">
+        <div class="error-message"></div>
       </td>
     </tr>
   </table>
@@ -85,7 +109,7 @@
 <!-- Wrapper for all semester sections -->
 <div id="semester-wrapper">
   <!-- Original Semester Section -->
-  <div class="semester-section clone-this">
+  <div class="semester-section clone-this" data-removable="false">
     <h3 contenteditable="true">Current Semester</h3>
     <table class="semester-table">
       <tr>
@@ -96,9 +120,18 @@
       </tr>
       <tr class="clone-row">
         <td><input type="text" placeholder="Course Name"></td>
-        <td><input type="number" placeholder="0" max="10"></td>
-        <td><input type="number" value="3" max="9"></td>
-        <td><input type="number" value="0" max="10"></td>
+        <td>
+          <input type="number" placeholder="0" max="10" min="0">
+          <div class="error-message"></div>
+        </td>
+        <td>
+          <input type="number" value="3" max="9" min="0">
+          <div class="error-message"></div>
+        </td>
+        <td>
+          <input type="number" value="0" max="10" min="0">
+          <div class="error-message"></div>
+        </td>
       </tr>
     </table>
   </div>
@@ -111,7 +144,6 @@
   const baseTable = document.querySelector(".semester-table");
   const templateRow = document.querySelector(".clone-row");
 
-  // Add 6 more rows to the initial table
   for (let i = 0; i < 6; i++) {
     const clone = templateRow.cloneNode(true);
     baseTable.appendChild(clone);
@@ -120,20 +152,29 @@
   let semesterCount = 1;
   const MAX_SEMESTERS = 19;
 
-  function enforceMaxValues() {
-    const allInputs = document.querySelectorAll('input[type="number"][max]');
+  function enforceValueLimits() {
+    const allInputs = document.querySelectorAll('input[type="number"]');
     allInputs.forEach(input => {
       input.addEventListener('input', () => {
         const max = parseFloat(input.max);
+        const min = parseFloat(input.min || "0");
         const value = parseFloat(input.value);
+        const errorDiv = input.parentElement.querySelector(".error-message");
+
         if (value > max) {
           input.value = max;
+          errorDiv.textContent = `Max allowed: ${max}`;
+        } else if (value < min) {
+          input.value = min;
+          errorDiv.textContent = `Min allowed: ${min}`;
+        } else {
+          errorDiv.textContent = "";
         }
       });
     });
   }
 
-  enforceMaxValues(); // Apply on page load
+  enforceValueLimits();
 
   function newSemester() {
     if (semesterCount >= MAX_SEMESTERS) {
@@ -143,32 +184,40 @@
 
     const originalSection = document.querySelector(".clone-this");
     const clonedSection = originalSection.cloneNode(true);
+    clonedSection.setAttribute("data-removable", "true");
 
-    // Update heading
     const heading = clonedSection.querySelector("h3");
     heading.innerText = "Future Semester";
     heading.contentEditable = true;
 
-    // Reset and reapply input limits
     const inputs = clonedSection.querySelectorAll("input");
     inputs.forEach(input => {
       if (input.type === "text") input.value = "";
       if (input.type === "number") {
         input.value = (input.max === "9") ? "3" : "0";
-        input.setAttribute("max", input.max); // Reapply max in case
+        input.setAttribute("max", input.max);
+        input.setAttribute("min", input.min || "0");
       }
     });
 
-    // Append new semester section
+    // Add remove button
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove Semester";
+    removeBtn.className = "remove-btn";
+    removeBtn.onclick = () => {
+      if (clonedSection.getAttribute("data-removable") === "true") {
+        clonedSection.remove();
+        semesterCount--;
+      }
+    };
+    clonedSection.appendChild(removeBtn);
+
     const wrapper = document.getElementById("semester-wrapper");
     wrapper.appendChild(clonedSection);
-
     semesterCount++;
 
-    // Apply max value enforcement to new inputs
-    enforceMaxValues();
+    enforceValueLimits();
 
-    // Scroll to new semester
     clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 </script>
