@@ -2,7 +2,15 @@
 <body>
 
 <h1>CGPA Calculator</h1>
-<h3>CGPA</h3>
+<table>
+  <tr>
+    <th>CGPA</th>
+     <td>
+      <input type="number" placeholder="0">
+    </td>
+  </tr>
+</table>
+
 
 <h3>Current Semester</h3>
 
