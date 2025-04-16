@@ -31,6 +31,9 @@
     <td>
       <input type="number" value="3">
     </td>
+    <td>
+      <input type="number" value="0">
+    </td>
 
   </tr>
 </table>
