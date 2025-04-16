@@ -49,6 +49,9 @@
     h3[contenteditable="true"] {
       margin-bottom: 10px;
       color: #333;
+     display: inline-block;
+     max-width: 75%; 
+     word-break: break-word;
     }
 
     button {
@@ -158,48 +161,53 @@
   enforceValueLimits(); // On page load
 
   function newSemester() {
-    if (semesterCount >= MAX_SEMESTERS) {
-      alert("Maximum of 20 semesters reached.");
-      return;
-    }
-
-    const originalSection = document.querySelector(".clone-this");
-    const clonedSection = originalSection.cloneNode(true);
-    clonedSection.setAttribute("data-removable", "true");
-
-    const heading = clonedSection.querySelector("h3");
-    heading.innerText = "Future Semester";
-    heading.contentEditable = true;
-
-    const inputs = clonedSection.querySelectorAll("input");
-    inputs.forEach(input => {
-      if (input.type === "text") input.value = "";
-      if (input.type === "number") {
-        input.value = (input.max === "9") ? "3" : "0";
-        input.setAttribute("max", input.max);
-        input.setAttribute("min", input.min || "0");
-      }
-    });
-
-    // Add remove button
-    const removeBtn = document.createElement("button");
-    removeBtn.textContent = "Remove Semester";
-    removeBtn.className = "remove-btn";
-    removeBtn.onclick = () => {
-      if (clonedSection.getAttribute("data-removable") === "true") {
-        clonedSection.remove();
-        semesterCount--;
-      }
-    };
-    clonedSection.appendChild(removeBtn);
-
-    const wrapper = document.getElementById("semester-wrapper");
-    wrapper.appendChild(clonedSection);
-    semesterCount++;
-
-    enforceValueLimits();
-    clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (semesterCount >= MAX_SEMESTERS) {
+    alert("Maximum of 19 semesters reached.");
+    return;
   }
+
+  const originalSection = document.querySelector(".clone-this");
+  const clonedSection = originalSection.cloneNode(true);
+  clonedSection.setAttribute("data-removable", "true");
+
+  const heading = clonedSection.querySelector("h3");
+  const futureNum = semesterCount; // Since first semester is already present
+  heading.innerText = `Future Semester ${futureNum}`;
+  heading.contentEditable = true;
+
+  const inputs = clonedSection.querySelectorAll("input");
+  inputs.forEach(input => {
+    if (input.type === "text") input.value = "";
+    if (input.type === "number") {
+      input.value = (input.max === "9") ? "3" : "0";
+      input.setAttribute("max", input.max);
+      input.setAttribute("min", input.min || "0");
+    }
+  });
+
+  // Remove existing Remove button (if any, from clone)
+  const oldRemove = clonedSection.querySelector(".remove-btn");
+  if (oldRemove) oldRemove.remove();
+
+  // Add new Remove button
+  const removeBtn = document.createElement("button");
+  removeBtn.textContent = "Remove Semester";
+  removeBtn.className = "remove-btn";
+  removeBtn.onclick = () => {
+    if (clonedSection.getAttribute("data-removable") === "true") {
+      clonedSection.remove();
+      semesterCount--;
+    }
+  };
+  clonedSection.appendChild(removeBtn);
+
+  const wrapper = document.getElementById("semester-wrapper");
+  wrapper.appendChild(clonedSection);
+  semesterCount++;
+
+  enforceValueLimits();
+  clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
 </script>
 
 </body>
