@@ -4,7 +4,7 @@
 <h1>CGPA Calculator</h1>
 <table>
   <tr>
-    <th>CGPA</th>
+    <th>Current CGPA</th>
      <td>
       <input type="number" placeholder="0">
     </td>
