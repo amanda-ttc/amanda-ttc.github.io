@@ -82,50 +82,75 @@
   </table>
 </div>
 
-<!-- Original Semester Section to Clone -->
-<div class="semester-section clone-this">
-  <h3 contenteditable="true">Current Semester</h3>
-  <table class="semester-table">
-    <tr>
-      <th>Course</th>
-      <th>GPA</th> 
-      <th>Course Credit</th>
-      <th>Previous Grade</th>
-    </tr>
-    <tr class="clone-row">
-      <td><input type="text" placeholder="Course Name"></td>
-      <td><input type="number" placeholder="0"></td>
-      <td><input type="number" value="3"></td>
-      <td><input type="number" value="0"></td>
-    </tr>
-  </table>
+<!-- Wrapper for all semester sections -->
+<div id="semester-wrapper">
+  <!-- Original Semester Section -->
+  <div class="semester-section clone-this">
+    <h3 contenteditable="true">Current Semester</h3>
+    <table class="semester-table">
+      <tr>
+        <th>Course</th>
+        <th>GPA</th> 
+        <th>Course Credit</th>
+        <th>Previous Grade</th>
+      </tr>
+      <tr class="clone-row">
+        <td><input type="text" placeholder="Course Name"></td>
+        <td><input type="number" placeholder="0" max="10"></td>
+        <td><input type="number" value="3" max="9"></td>
+        <td><input type="number" value="0"></td>
+      </tr>
+    </table>
+  </div>
 </div>
 
-<!-- Add Semester Button -->
-<button onclick="newSemester()">Add Semester</button>
+<!-- Button to add a new semester -->
+<button id="addSemesterBtn" onclick="newSemester()">Add Semester</button>
 
 <script>
-  // Add 6 more rows to the first table
   const baseTable = document.querySelector(".semester-table");
   const templateRow = document.querySelector(".clone-row");
 
+  // Add 6 more rows to the first table
   for (let i = 0; i < 6; i++) {
     const clone = templateRow.cloneNode(true);
     baseTable.appendChild(clone);
   }
 
+  let semesterCount = 1; // 1 semester already present
+  const MAX_SEMESTERS = 19;
+
   function newSemester() {
-    // Clone the whole semester section (heading + table + container)
+    if (semesterCount >= MAX_SEMESTERS) {
+      alert("Maximum of 19 semesters reached.");
+      return;
+    }
+
     const originalSection = document.querySelector(".clone-this");
     const clonedSection = originalSection.cloneNode(true);
 
-    // Update heading inside the clone
+    // Update heading
     const heading = clonedSection.querySelector("h3");
     heading.innerText = "Future Semester";
     heading.contentEditable = true;
 
-    // Append it after the button
-    document.body.appendChild(clonedSection);
+    // Reset all input fields
+    const inputs = clonedSection.querySelectorAll("input");
+    inputs.forEach(input => {
+      if (input.type === "text") input.value = "";
+      if (input.type === "number") {
+        if (input.max === "10") input.value = "0";      // GPA
+        else if (input.max === "9") input.value = "3";   // Credit
+        else input.value = "0";                          // Previous Grade
+      }
+    });
+
+    // Insert before the Add Semester button
+    const wrapper = document.getElementById("semester-wrapper");
+    const button = document.getElementById("addSemesterBtn");
+    wrapper.appendChild(clonedSection);
+
+    semesterCount++;
   }
 </script>
 
