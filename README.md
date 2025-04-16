@@ -159,7 +159,7 @@
 
   function newSemester() {
     if (semesterCount >= MAX_SEMESTERS) {
-      alert("Maximum of 19 semesters reached.");
+      alert("Maximum of 20 semesters reached.");
       return;
     }
 
