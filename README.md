@@ -7,16 +7,20 @@
 
 <table>
   <tr>
-    <th>Person 1</th>
-    <th>Person 2</th> 
+    <th>Course</th>
+    <th>GPA</th> 
     <th>Person 3</th>
   </tr>
   <tr>
     <td>
-      <input type="text" name="UserName" placeholder="please enter your Username">
+      <input type="text" placeholder="Course Name">
     </td>
-    <td>Tobias</td> 
-    <td>Linus</td>
+    <td>
+      <input type="number" step="0.1" placeholder="0">
+    </td>
+    <td>
+      <input type="number" value="3">
+    </td>
   </tr>
 </table>
 
