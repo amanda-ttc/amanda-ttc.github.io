@@ -76,7 +76,7 @@
     <tr>
       <th>Current CGPA</th>
       <td>
-        <input type="number" placeholder="0">
+        <input type="number" placeholder="0" max="10">
       </td>
     </tr>
   </table>
@@ -98,13 +98,13 @@
         <td><input type="text" placeholder="Course Name"></td>
         <td><input type="number" placeholder="0" max="10"></td>
         <td><input type="number" value="3" max="9"></td>
-        <td><input type="number" value="0"></td>
+        <td><input type="number" value="0" max="10"></td>
       </tr>
     </table>
   </div>
 </div>
 
-<!-- Button to add a new semester -->
+<!-- Add Semester Button -->
 <button id="addSemesterBtn" onclick="newSemester()">Add Semester</button>
 
 <script>
@@ -117,7 +117,7 @@
     baseTable.appendChild(clone);
   }
 
-  let semesterCount = 1; // 1 semester already present
+  let semesterCount = 1;
   const MAX_SEMESTERS = 19;
 
   function newSemester() {
@@ -129,28 +129,30 @@
     const originalSection = document.querySelector(".clone-this");
     const clonedSection = originalSection.cloneNode(true);
 
-    // Update heading
+    // Update heading inside the clone
     const heading = clonedSection.querySelector("h3");
     heading.innerText = "Future Semester";
     heading.contentEditable = true;
 
-    // Reset all input fields
+    // Reset inputs and apply caps
     const inputs = clonedSection.querySelectorAll("input");
     inputs.forEach(input => {
       if (input.type === "text") input.value = "";
       if (input.type === "number") {
-        if (input.max === "10") input.value = "0";      // GPA
-        else if (input.max === "9") input.value = "3";   // Credit
-        else input.value = "0";                          // Previous Grade
+        input.value = (input.max === "9") ? "3" : "0";
+        input.setAttribute("max", input.max); // Ensure max stays set
       }
     });
 
-    // Insert before the Add Semester button
+    // Append before the button
     const wrapper = document.getElementById("semester-wrapper");
     const button = document.getElementById("addSemesterBtn");
     wrapper.appendChild(clonedSection);
 
     semesterCount++;
+
+    // Scroll into view
+    clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 </script>
 
