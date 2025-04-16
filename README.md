@@ -35,6 +35,15 @@
       margin: 20px 0;
       padding: 8px 16px;
       font-size: 14px;
+      border: 1px solid #611b3f;
+      background-color: white;
+      color: #611b3f;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #f7e6ee;
     }
   </style>
 </head>
@@ -55,9 +64,9 @@
 </div>
 
 <!-- Current Semester Section -->
-<div class="semester-section">
+<div class="semester-section clone-this">
   <h3 contenteditable="true">Current Semester</h3>
-  <table id="CurrentSem" class="semester-table">
+  <table class="semester-table">
     <tr>
       <th>Course</th>
       <th>GPA</th> 
@@ -73,39 +82,30 @@
   </table>
 </div>
 
-<!-- Button -->
+<!-- Button to add a new semester -->
 <button onclick="newSemester()">Add Semester</button>
 
 <script>
+  // Add 6 extra rows to the original semester table
+  const baseTable = document.querySelector(".semester-table");
   const templateRow = document.querySelector(".clone-row");
-  const table = document.getElementById("CurrentSem");
-
-  // Add 6 more rows on load
   for (let i = 0; i < 6; i++) {
     const clone = templateRow.cloneNode(true);
-    table.appendChild(clone);
+    baseTable.appendChild(clone);
   }
 
   function newSemester() {
-    // Clone the table and heading
-    const originalTable = document.querySelector(".semester-table");
-    const clonedTable = originalTable.cloneNode(true);
+    // Clone the entire semester section (heading + table)
+    const originalSection = document.querySelector(".clone-this");
+    const clonedSection = originalSection.cloneNode(true);
 
-    // Create a new container section
-    const container = document.createElement("div");
-    container.className = "semester-section";
-
-    // Create a new editable heading
-    const heading = document.createElement("h3");
-    heading.contentEditable = true;
+    // Update the heading inside the clone
+    const heading = clonedSection.querySelector("h3");
     heading.innerText = "Future Semester";
+    heading.contentEditable = true;
 
-    // Append heading and table to the container
-    container.appendChild(heading);
-    container.appendChild(clonedTable);
-
-    // Append container to the body
-    document.body.appendChild(container);
+    // Append the new section to the page
+    document.body.appendChild(clonedSection);
   }
 </script>
 
