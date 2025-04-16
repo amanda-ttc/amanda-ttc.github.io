@@ -6,7 +6,6 @@
 <h3>Current Semester</h3>
 
 <table>
-
   <tr>
     <th>Person 1</th>
     <th>Person 2</th> 
@@ -14,7 +13,7 @@
   </tr>
   <tr>
     <td>
-      <input type="text" name="UserName" placeholder="please enter your Username"›
+      <input type="text" name="UserName" placeholder="please enter your Username">
     </td>
     <td>Tobias</td> 
     <td>Linus</td>
