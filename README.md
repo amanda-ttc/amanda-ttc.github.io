@@ -48,9 +48,9 @@
     h3[contenteditable="true"] {
       margin-bottom: 10px;
       color: #333;
-     display: inline-block;
-     max-width: 75%; 
-     word-break: break-word;
+      display: inline-block;
+      max-width: 75%;
+      word-break: break-word;
     }
 
     button {
@@ -95,7 +95,7 @@
     <tr>
       <th>Current CGPA</th>
       <td>
-        <input type="number" placeholder="0" max="10" min="0">
+        <input type="number" placeholder="0" max="10" min="0" step="0.01">
       </td>
     </tr>
   </table>
@@ -115,9 +115,9 @@
       </tr>
       <tr class="clone-row">
         <td><input type="text" placeholder="Course Name"></td>
-        <td><input type="number" placeholder="0" max="10" min="0"></td>
-        <td><input type="number" value="3" max="9" min="0"></td>
-        <td><input type="number" value="0" max="10" min="0"></td>
+        <td><input type="number" placeholder="0" max="10" min="0" step="0.01"></td>
+        <td><input type="number" value="3" max="9" min="0" step="0.1"></td>
+        <td><input type="number" value="0" max="10" min="0" step="0.01"></td>
       </tr>
     </table>
   </div>
@@ -139,20 +139,22 @@
   let semesterCount = 1;
   const MAX_SEMESTERS = 20;
 
-  // Enforce max and min in real time
   function enforceValueLimits() {
     const allInputs = document.querySelectorAll('input[type="number"]');
     allInputs.forEach(input => {
       input.addEventListener('input', () => {
         const max = parseFloat(input.max);
         const min = parseFloat(input.min || "0");
-        const value = parseFloat(input.value);
+        const step = parseFloat(input.step || "1");
+        let value = parseFloat(input.value);
 
-        if (value > max) {
-          input.value = max;
-        } else if (value < min) {
-          input.value = min;
-        }
+        // Clamp values
+        if (value > max) value = max;
+        if (value < min) value = min;
+
+        // Round based on step
+        const decimals = (step.toString().split('.')[1] || "").length;
+        input.value = isNaN(value) ? "" : parseFloat(value).toFixed(decimals);
       });
     });
   }
@@ -160,53 +162,56 @@
   enforceValueLimits(); // On page load
 
   function newSemester() {
-  if (semesterCount >= MAX_SEMESTERS) {
-    alert("Maximum of 19 semesters reached.");
-    return;
+    if (semesterCount >= MAX_SEMESTERS) {
+      alert("Maximum of 19 semesters reached.");
+      return;
+    }
+
+    const originalSection = document.querySelector(".clone-this");
+    const clonedSection = originalSection.cloneNode(true);
+    clonedSection.setAttribute("data-removable", "true");
+
+    // Update heading with number
+    const heading = clonedSection.querySelector("h3");
+    const futureNum = semesterCount;
+    heading.innerText = `Future Semester ${futureNum}`;
+    heading.contentEditable = true;
+
+    // Reset all input fields
+    const inputs = clonedSection.querySelectorAll("input");
+    inputs.forEach(input => {
+      if (input.type === "text") input.value = "";
+      if (input.type === "number") {
+        input.value = (input.max === "9") ? "3" : "0";
+        input.setAttribute("max", input.max);
+        input.setAttribute("min", input.min || "0");
+        input.setAttribute("step", input.step || "1");
+      }
+    });
+
+    // Remove existing remove button if present
+    const oldRemove = clonedSection.querySelector(".remove-btn");
+    if (oldRemove) oldRemove.remove();
+
+    // Add remove button
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "Remove Semester";
+    removeBtn.className = "remove-btn";
+    removeBtn.onclick = () => {
+      if (clonedSection.getAttribute("data-removable") === "true") {
+        clonedSection.remove();
+        semesterCount--;
+      }
+    };
+    clonedSection.appendChild(removeBtn);
+
+    const wrapper = document.getElementById("semester-wrapper");
+    wrapper.appendChild(clonedSection);
+    semesterCount++;
+
+    enforceValueLimits();
+    clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
-  const originalSection = document.querySelector(".clone-this");
-  const clonedSection = originalSection.cloneNode(true);
-  clonedSection.setAttribute("data-removable", "true");
-
-  const heading = clonedSection.querySelector("h3");
-  const futureNum = semesterCount; // Since first semester is already present
-  heading.innerText = `Future Semester ${futureNum}`;
-  heading.contentEditable = true;
-
-  const inputs = clonedSection.querySelectorAll("input");
-  inputs.forEach(input => {
-    if (input.type === "text") input.value = "";
-    if (input.type === "number") {
-      input.value = (input.max === "9") ? "3" : "0";
-      input.setAttribute("max", input.max);
-      input.setAttribute("min", input.min || "0");
-    }
-  });
-
-  // Remove existing Remove button (if any, from clone)
-  const oldRemove = clonedSection.querySelector(".remove-btn");
-  if (oldRemove) oldRemove.remove();
-
-  // Add new Remove button
-  const removeBtn = document.createElement("button");
-  removeBtn.textContent = "Remove Semester";
-  removeBtn.className = "remove-btn";
-  removeBtn.onclick = () => {
-    if (clonedSection.getAttribute("data-removable") === "true") {
-      clonedSection.remove();
-      semesterCount--;
-    }
-  };
-  clonedSection.appendChild(removeBtn);
-
-  const wrapper = document.getElementById("semester-wrapper");
-  wrapper.appendChild(clonedSection);
-  semesterCount++;
-
-  enforceValueLimits();
-  clonedSection.scrollIntoView({ behavior: "smooth", block: "start" });
-}
 </script>
 
 </body>
